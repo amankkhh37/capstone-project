@@ -85,18 +85,25 @@ def multi_agent():
     def on_multi_agent_submit(user_input):
         if "group_chat" not in st.session_state:
             st.session_state.group_chat = None
+        interactions: int = 0
+        is_complete: bool = False
         if user_input:
             try:
                 st.session_state.multi_agent_history.append({"role": "user", "message": user_input})
-                with st.spinner("Agents are collaborating..."):                    
-                    results , group_chat = asyncio.run(run_multi_agent(user_input,st.session_state.group_chat))
+                with st.spinner("Agents are collaborating..."):
+                    # while not is_complete and interactions < 10:
+                    group_chat = asyncio.run(run_multi_agent(user_input, st.session_state.group_chat))
                     st.session_state.group_chat = group_chat
-                    # Fix: Extract messages from the result dictionary and map content to message
-                    for response in results:
-                        st.session_state.multi_agent_history.append({
-                            "role": response.role,
-                            "message": response.content
-                        })
+                    interactions += 1
+                    #if group_chat is not None:
+                        # Fix: Extract messages from the result dictionary and map content to message
+                        # for response in group_chat:
+                        #     st.session_state.multi_agent_history.append({
+                        #         "role": response.role,
+                        #         "message": response.content
+                        #     })
+                     #       break
+                                #st.markdown(f"**{response.role} - {response.name or '*'}**")
 
             except Exception as e:
                 logging.error(f"Error in multi-agent system: {e}")

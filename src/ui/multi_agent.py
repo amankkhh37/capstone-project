@@ -19,6 +19,8 @@ from semantic_kernel.agents.agent import Agent
 from semantic_kernel.contents import FunctionCallContent, FunctionResultContent
 from semantic_kernel.agents.chat_completion.chat_completion_agent import ChatCompletionAgent, ChatHistoryAgentThread
 from dotenv import load_dotenv
+import streamlit as st
+from semantic_kernel.agents.strategies import KernelFunctionSelectionStrategy
 load_dotenv()
 kernel = Kernel()
 kernel.add_service(
@@ -87,13 +89,13 @@ selection_function = KernelFunctionFromPrompt(
                 - ProductOwner
 
                 Rules:               
-                - If User input is "APPROVED", the conversation should end and terminate.
+                - The first turn is always the BusinessAnalyst.
                 - After the user inputs a requirement, it's the BusinessAnalyst turn.
                 - After the BusinessAnalyst responds, the SoftwareEngineer should convert the requirement into HTML.
                 - After the SoftwareEngineer provides HTML, the ProductOwner should validate it.
                 - If ProductOwner approves  with "READY FOR USER APPROVAL", the conversation ends.
                 - If not approved, the next turn goes to SoftwareEngineer to correct.
-                - If User replies "APPROVED", the conversation should end or terminate.
+                
 
                 
                 History:  
@@ -174,31 +176,49 @@ async def run_multi_agent(usermessage, group_chat=None):
     try:
         
         async for result in group_chat.invoke():
+            st.markdown(f"**{result.role} - {result.name or '*'}**")
+            st.info(result.content)
             print("After RESULT chat messages 172 line")
             if result is None or not result.name:
                 #return result              
-                continue            
-            #history =  group_chat.get_chat_messages()
-            #history = await group_chat.get_chat_messages()
+                continue     
             if "READY FOR USER APPROVAL" in result.content.upper():
                 print("Product Owner is ready for user approval.")
-                return results, group_chat  
+                #group_chat.is_complete=True
+                st.success("Product Owner is ready for user approval.")
+                st.markdown("**Please click on the button below to approve the changes.**")
+                #st.button("Approve", on_click=pushGtoGit)
+                return group_chat
+                break
+                #return group_chat       
+            if group_chat.is_complete:
+                st.success("Conversation completed!")
+                # st.download_button(
+                #     "Download Presentation",
+                #     data=open("presentation.pptx", "rb").read(),
+                #     file_name="presentation.pptx",
+                #     mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                # )
+                break
+            #history =  group_chat.get_chat_messages()
+            #history = await group_chat.get_chat_messages()
+            # if "READY FOR USER APPROVAL" in result.content.upper():
+            #     print("Product Owner is ready for user approval.")
+            #     return group_chat  
                 #break    
                 #group_chat.is_complete=True
             print(result.role)
-            #print(result.content)
+            
             print(result.name)
-            #group_chat.is_complete = True
-            #group_chat.is_complete = True
+            
             print(group_chat.is_complete )
-            results.append(result)
-            #await group_chat
-            #break
+            #results.append(result)
+            
             
         #return results, group_chat    
     except Exception as e:
             print(f"Error during chat invocation: {e}")    
-    await group_chat.reset()
+    #await group_chat.reset()
 
 async def on_termination_callback():
     print("✅ Chat terminated by user approval.")
