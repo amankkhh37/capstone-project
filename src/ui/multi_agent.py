@@ -160,7 +160,7 @@ async def run_multi_agent(usermessage, group_chat=None):
     print(usermessage)
     user_input=usermessage   
     chat_messages = []
-    chat_messages.append(user_input)    
+    #chat_messages.append(user_input)    
     await group_chat.add_chat_message(message=user_input)
     #chat_history_list = [msg async for msg in group_chat.get_chat_history()]
     #await group_chat.add_chat_message(ChatMessageContent(role="user", content=user_input))
@@ -178,6 +178,7 @@ async def run_multi_agent(usermessage, group_chat=None):
         async for result in group_chat.invoke():
             st.markdown(f"**{result.role} - {result.name or '*'}**")
             st.info(result.content)
+            chat_messages.append(result)   
             print("After RESULT chat messages 172 line")
             if result is None or not result.name:
                 #return result              
@@ -188,6 +189,34 @@ async def run_multi_agent(usermessage, group_chat=None):
                 st.success("Product Owner is ready for user approval.")
                 st.markdown("**Please click on the button below to approve the changes.**")
                 #st.button("Approve", on_click=pushGtoGit)
+                html_code = None
+                for msg in reversed(chat_messages):
+                    if msg.name == "SoftwareEngineer":
+                        match = re.search(r"```html(.*?)```", msg.content, re.DOTALL | re.IGNORECASE)
+                        if match:
+                            html_code = match.group(1).strip()
+                            
+
+                        if html_code:
+                            print("✅ Extracted HTML code:\n", html_code)
+                            # You can also display this in Streamlit
+                            st.code(html_code, language='html')
+                        else:
+                            print("⚠️ No HTML code found from Software Engineer.")
+                        if html_code:        # Define path
+                            folder_path = os.path.join(os.getcwd(), "pushtoGitFolder")
+                            os.makedirs(folder_path, exist_ok=True)
+                            file_path = os.path.join(folder_path, "index.html")
+
+                            # Save the HTML file
+                            with open(file_path, "w", encoding="utf-8") as f:
+                                f.write(html_code)
+                            print(f"✅ HTML code saved to {file_path}")
+                            st.success("HTML file saved successfully to pushtoGitFolder/index.html")
+                            st.code(html_code, language='html')
+                            break
+                        else:
+                            print("⚠️ No HTML code found from Software Engineer.")
                 return group_chat
                 break
                 #return group_chat       

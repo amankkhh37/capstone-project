@@ -1,25 +1,26 @@
 #!/bin/bash
 
 # Set these values
-REPO_NAME="Capstone"
+REPO_NAME="capstone-project"
 # === File Info ===
 
 REMOTE_FILE_PATH="index.html"
 COMMIT_MESSAGE="Add or update file via API"
-COMMITTER_NAME="odl-user-1750231"
-COMMITTER_EMAIL="odl_user_1750231@sandboxailabs1011.onmicrosoft.com"
-GITHUB_USERNAME="odl-user-1750231"
-GITHUB_REPO="Capstone"
+COMMITTER_NAME="amankkhh37"
+COMMITTER_EMAIL="amankkhh37@gmail.com"
+GITHUB_USERNAME="amankkhh37"
+GITHUB_REPO="capstone-project"
 FILE_PATH="local-file.txt"
-LOCAL_FILE_PATH="C:\Users\demouser\Desktop\github_test\htmlfile\index.html"
-GITHUB_TOKEN="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"
+#LOCAL_FILE_PATH="C:\Users\demouser\Desktop\github_test\htmlfile\index.html"
+LOCAL_FILE_PATH=$(pwd)"/pushtoGitFolder/index.html"
+GITHUB_TOKEN="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"
 COMMIT_MESSAGE="Add file via API"
-BRANCH="main"
+BRANCH="master"
 REMOTE_PATH="index.html"
 COMMIT_MESSAGE="Upload file via GitHub API"
-
-
 ENCODED_CONTENT=$(base64 -w 0 "$LOCAL_FILE_PATH")
+echo "Current directory:"
+echo $LOCAL_FILE_PATH
 
 # === GitHub API endpoint ===
 API_URL="https://api.github.com/repos/$GITHUB_USERNAME/$REPO_NAME/contents/$REMOTE_FILE_PATH"
