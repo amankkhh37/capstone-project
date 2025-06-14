@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>myApp - Add & Subtract</title>
+  <title>myCalculator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,113 +12,148 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100vh;
       background-color: #f4f4f4;
+    }
+    .calculator-container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 20px;
       color: #333;
     }
-
-    .container {
-      text-align: center;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .logo {
-      margin-bottom: 20px;
-    }
-
-    input[type="number"] {
+    input {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
       padding: 10px;
-      margin: 10px;
-      width: 150px;
-      border: 1px solid #ccc;
+      border: 1px solid #ddd;
       border-radius: 5px;
-    }
-
-    button {
-      padding: 10px 20px;
-      margin: 10px;
       font-size: 16px;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
       border: none;
-      border-radius: 5px;
-      color: #fff;
-      background-color: #660099;
+      padding: 10px;
+      width: 100%;
       cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+      margin-top: 10px;
     }
-
     button:hover {
-      background-color: #550077;
+      background-color: #0056b3;
     }
-
     .result {
       margin-top: 20px;
-      font-size: 20px;
-      font-weight: bold;
+      font-size: 18px;
+      color: #333;
     }
-
-    /* Responsive design */
-    @media (max-width: 600px) {
-      input[type="number"] {
-        width: 100px;
-      }
-
-      button {
-        font-size: 14px;
-      }
+    .error {
+      color: red;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Accenture Logo -->
-    <div class="logo">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Accenture.svg" alt="Accenture Logo" width="200">
-    </div>
-    
-    <h1>Simple Calculator</h1>
-    <p>Enter two numbers to perform addition or subtraction:</p>
-    
-    <!-- Input fields for numbers -->
-    <input type="number" id="num1" placeholder="First number">
-    <input type="number" id="num2" placeholder="Second number">
-    <br>
-    <!-- Buttons for operations -->
-    <button onclick="performOperation('add')">Add</button>
-    <button onclick="performOperation('subtract')">Subtract</button>
-    
-    <!-- Result display -->
+  <div class="calculator-container">
+    <h1>myCalculator</h1>
+    <label for="number">Number:</label>
+    <input type="number" id="number" placeholder="Enter a positive number" />
+    <label for="base">Base (optional):</label>
+    <input type="number" id="base" placeholder="Enter a base (default is 10)" />
+    <button id="calculate">Calculate Logarithm</button>
+    <button id="base10">Log Base 10</button>
+    <button id="baseE">Log Base e</button>
+    <button id="base2">Log Base 2</button>
     <div class="result" id="result"></div>
+    <div class="error" id="error"></div>
   </div>
 
   <script>
-    // Perform addition or subtraction
-    function performOperation(operation) {
-      const num1 = document.getElementById('num1').value;
-      const num2 = document.getElementById('num2').value;
-      const resultDiv = document.getElementById('result');
-      
-      // Validate input
-      if (!num1 || !num2 || isNaN(num1) || isNaN(num2)) {
-        resultDiv.textContent = "Please enter valid numbers.";
-        resultDiv.style.color = "red";
-        return;
+    // Utility function to calculate logarithm
+    function calculateLogarithm(number, base) {
+      if (number <= 0) {
+        return "Error: Number must be positive.";
       }
-      
-      const n1 = parseFloat(num1);
-      const n2 = parseFloat(num2);
-      let result = 0;
-
-      if (operation === 'add') {
-        result = n1 + n2;
-      } else if (operation === 'subtract') {
-        result = n1 - n2;
+      if (base <= 0 || base === 1) {
+        return "Error: Base must be positive and cannot be 1.";
       }
-
-      resultDiv.textContent = `Result: ${result}`;
-      resultDiv.style.color = "black";
+      return Math.log(number) / Math.log(base); // Formula for logarithm calculation
     }
+
+    // Event Listener for "Calculate" button
+    document.getElementById("calculate").addEventListener("click", () => {
+      const number = parseFloat(document.getElementById("number").value);
+      const base = parseFloat(document.getElementById("base").value) || 10; // Default base is 10
+      const resultElement = document.getElementById("result");
+      const errorElement = document.getElementById("error");
+      
+      // Validate and calculate results
+      const result = calculateLogarithm(number, base);
+      if (typeof result === "string") {
+        errorElement.textContent = result; // Display error messages
+        resultElement.textContent = ""; // Clear result
+      } else {
+        resultElement.textContent = `Result: ${result.toFixed(10)}`; // Display results with precision
+        errorElement.textContent = ""; // Clear error
+      }
+    });
+
+    // Event Listener for "Log Base 10" button
+    document.getElementById("base10").addEventListener("click", () => {
+      const number = parseFloat(document.getElementById("number").value);
+      const resultElement = document.getElementById("result");
+      const errorElement = document.getElementById("error");
+
+      const result = calculateLogarithm(number, 10); // Base 10
+      if (typeof result === "string") {
+        errorElement.textContent = result;
+        resultElement.textContent = "";
+      } else {
+        resultElement.textContent = `Result (Log Base 10): ${result.toFixed(10)}`;
+        errorElement.textContent = "";
+      }
+    });
+
+    // Event Listener for "Log Base e" button (Natural Logarithm)
+    document.getElementById("baseE").addEventListener("click", () => {
+      const number = parseFloat(document.getElementById("number").value);
+      const resultElement = document.getElementById("result");
+      const errorElement = document.getElementById("error");
+
+      const result = calculateLogarithm(number, Math.E); // Base e (Natural Logarithm)
+      if (typeof result === "string") {
+        errorElement.textContent = result;
+        resultElement.textContent = "";
+      } else {
+        resultElement.textContent = `Result (Natural Logarithm): ${result.toFixed(10)}`;
+        errorElement.textContent = "";
+      }
+    });
+
+    // Event Listener for "Log Base 2" button
+    document.getElementById("base2").addEventListener("click", () => {
+      const number = parseFloat(document.getElementById("number").value);
+      const resultElement = document.getElementById("result");
+      const errorElement = document.getElementById("error");
+
+      const result = calculateLogarithm(number, 2); // Base 2
+      if (typeof result === "string") {
+        errorElement.textContent = result;
+        resultElement.textContent = "";
+      } else {
+        resultElement.textContent = `Result (Log Base 2): ${result.toFixed(10)}`;
+        errorElement.textContent = "";
+      }
+    });
   </script>
 </body>
 </html>
