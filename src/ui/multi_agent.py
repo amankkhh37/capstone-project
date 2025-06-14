@@ -127,7 +127,10 @@ env_vars = {
 import subprocess
 def pushGtoGit():              
         env = {**os.environ,**env_vars}
-        script_path = os.path.join( os.getcwd(), "pushtoGitFolder", "push_to_github.sh")
+        current_file_path = os.path.abspath(__file__)
+# Go one level up to get the project root
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_file_path)))        
+        script_path = os.path.join( project_root, "pushtoGitFolder", "push_to_github.sh")
         bash_path = r"C:\Program Files\Git\bin\bash.exe"
         try:
             result = subprocess.run([bash_path, script_path], check=True, capture_output=True, text=True, env=env)
