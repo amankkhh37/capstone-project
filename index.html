@@ -1,46 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MYLIFE</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f2f2f2;
-    }
-    .container {
-      text-align: center;
-      background-color: #fff;
-      border: 1px solid #ddd;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      color: #2c3e50;
-      margin-bottom: 10px;
-    }
-    p {
-      font-size: 18px;
-      color: #555;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>myCalculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .calculator {
+            background: #fff;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .calculator input[type="number"] {
+            width: 90%;
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .calculator button {
+            width: 45%;
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .calculator button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>MYLIFE</h1>
-    <p>Created by Aman Gupta</p>
-  </div>
+    <div class="calculator">
+        <h2>myCalculator</h2>
+        <input type="number" id="number1" placeholder="Enter first number">
+        <input type="number" id="number2" placeholder="Enter second number">
+        <div>
+            <button onclick="performOperation('add')">Add</button>
+            <button onclick="performOperation('subtract')">Subtract</button>
+        </div>
+        <div class="result" id="result"></div>
+    </div>
+    
+    <script>
+        function performOperation(operation) {
+            const num1 = document.getElementById('number1').value;
+            const num2 = document.getElementById('number2').value;
 
-  <script>
-    // You can add more functionality here if needed in the future
-    console.log("Welcome to MYLIFE by Aman Gupta!");
-  </script>
+            // Input validation
+            if (isNaN(num1) || isNaN(num2) || num1 === '' || num2 === '') {
+                document.getElementById('result').innerText = 'Please enter valid numbers!';
+                return;
+            }
+
+            const number1 = parseFloat(num1);
+            const number2 = parseFloat(num2);
+
+            let result;
+            if (operation === 'add') {
+                result = number1 + number2;
+            } else if (operation === 'subtract') {
+                result = number1 - number2;
+            }
+
+            document.getElementById('result').innerText = `Result: ${result}`;
+        }
+    </script>
 </body>
 </html>
