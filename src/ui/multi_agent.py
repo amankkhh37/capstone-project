@@ -210,9 +210,12 @@ async def run_multi_agent(usermessage, group_chat=None):
                             folder_path = os.path.join(os.getcwd(), "pushtoGitFolder")
                             os.makedirs(folder_path, exist_ok=True)
                             file_path = os.path.join(folder_path, "index.html")
-
+                            current_file_path = os.path.abspath(__file__)
+                            # Go one level up to get the project root
+                            project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_file_path)))        
+                            script_path = os.path.join( project_root, "pushtoGitFolder", "index.html")
                             # Save the HTML file
-                            with open(file_path, "w", encoding="utf-8") as f:
+                            with open(script_path, "w", encoding="utf-8") as f:
                                 f.write(html_code)
                             print(f"✅ HTML code saved to {file_path}")
                             st.success("HTML file saved successfully to pushtoGitFolder/index.html")
