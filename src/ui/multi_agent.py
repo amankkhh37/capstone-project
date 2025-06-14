@@ -1,7 +1,7 @@
 import os
 import re
 import asyncio
-
+import subprocess
 from semantic_kernel import Kernel
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
 from semantic_kernel.agents import AgentGroupChat, ChatCompletionAgent
@@ -47,15 +47,9 @@ ProductOwner="ProductOwner"
 
 class ApprovalTerminationStrategy(TerminationStrategy):
     async def should_agent_terminate(self,agent: Agent, history: list[ChatMessageContent]) -> bool:
-        print("I am here at termination strategy")
-        
-# Manually update the function context
-                
+        """Check if the conversation should terminate based on the Product Owner's approval."""
         for message in history:
             print("Querying inside message")
-            #print(message)            
-            # if  agent.name=="ProductOwner" and "READY FOR USER APPROVAL" in message.content.upper():
-            #      return True   
             if message.content.upper()=="APPROVED":
                 pushGtoGit()
                 return True
@@ -124,7 +118,7 @@ env_vars = {
     "GIT_USER_EMAIL":os.getenv("GIT_USER_EMAIL")
 }
 
-import subprocess
+
 def pushGtoGit():              
         env = {**os.environ,**env_vars}
         current_file_path = os.path.abspath(__file__)
@@ -140,8 +134,6 @@ def pushGtoGit():
 
     
 async def run_multi_agent(usermessage, group_chat=None):  
-
-
     history_reducer = ChatHistoryTruncationReducer(target_count=10)
     if group_chat is None:
         group_chat = AgentGroupChat(
@@ -154,35 +146,24 @@ async def run_multi_agent(usermessage, group_chat=None):
             history_variable_name="history",
             history_reducer=history_reducer,
             termination_keyword="APPROVED"
-        )    ,
-        #termination_strategy = ApprovalTerminationStrategy(agents=[product_owner], maximum_iterations=10)   
+        )    , 
         termination_strategy = ApprovalTerminationStrategy() 
         )
 
     is_complete = False 
     print(usermessage)
     user_input=usermessage   
-    chat_messages = []
-    #chat_messages.append(user_input)    
+    chat_messages = []        
     await group_chat.add_chat_message(message=user_input)
-    #chat_history_list = [msg async for msg in group_chat.get_chat_history()]
-    #await group_chat.add_chat_message(ChatMessageContent(role="user", content=user_input))
-    #history = group_chat.get_chat_messages()
-    
-    print("I PRINTING HISTORY")
-    print("After adding chat messages 152 line")
     if user_input.strip().upper() != "APPROVED":
-        group_chat.is_complete=False
-    
+        group_chat.is_complete=False    
     results = []
-    #thread: ChatHistoryAgentThread = None
     try:
         
         async for result in group_chat.invoke():
             st.markdown(f"**{result.role} - {result.name or '*'}**")
             st.info(result.content)
-            chat_messages.append(result)   
-            print("After RESULT chat messages 172 line")
+            chat_messages.append(result)  
             if result is None or not result.name:
                 #return result              
                 continue     
@@ -190,20 +171,19 @@ async def run_multi_agent(usermessage, group_chat=None):
                 print("Product Owner is ready for user approval.")
                 #group_chat.is_complete=True
                 st.success("Product Owner is ready for user approval.")
-                st.markdown("**Please click on the button below to approve the changes.**")
+                #st.markdown("**Please click on the button below to approve the changes.**")
                 #st.button("Approve", on_click=pushGtoGit)
                 html_code = None
                 for msg in reversed(chat_messages):
                     if msg.name == "SoftwareEngineer":
                         match = re.search(r"```html(.*?)```", msg.content, re.DOTALL | re.IGNORECASE)
                         if match:
-                            html_code = match.group(1).strip()
-                            
+                            html_code = match.group(1).strip()                            
 
                         if html_code:
                             print("✅ Extracted HTML code:\n", html_code)
                             # You can also display this in Streamlit
-                            st.code(html_code, language='html')
+                            #st.code(html_code, language='html')
                         else:
                             print("⚠️ No HTML code found from Software Engineer.")
                         if html_code:        # Define path
@@ -218,8 +198,8 @@ async def run_multi_agent(usermessage, group_chat=None):
                             with open(script_path, "w", encoding="utf-8") as f:
                                 f.write(html_code)
                             print(f"✅ HTML code saved to {file_path}")
-                            st.success("HTML file saved successfully to pushtoGitFolder/index.html")
-                            st.code(html_code, language='html')
+                            # st.success("HTML file saved successfully to pushtoGitFolder/index.html")
+                            # st.code(html_code, language='html')
                             break
                         else:
                             print("⚠️ No HTML code found from Software Engineer.")
@@ -228,52 +208,8 @@ async def run_multi_agent(usermessage, group_chat=None):
                 #return group_chat       
             if group_chat.is_complete:
                 st.success("Conversation completed!")
-                # st.download_button(
-                #     "Download Presentation",
-                #     data=open("presentation.pptx", "rb").read(),
-                #     file_name="presentation.pptx",
-                #     mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"
-                # )
                 break
-            #history =  group_chat.get_chat_messages()
-            #history = await group_chat.get_chat_messages()
-            # if "READY FOR USER APPROVAL" in result.content.upper():
-            #     print("Product Owner is ready for user approval.")
-            #     return group_chat  
-                #break    
-                #group_chat.is_complete=True
-            print(result.role)
-            
-            print(result.name)
-            
-            print(group_chat.is_complete )
-            #results.append(result)
-            
-            
-        #return results, group_chat    
     except Exception as e:
             print(f"Error during chat invocation: {e}")    
-    #await group_chat.reset()
-
-async def on_termination_callback():
-    print("✅ Chat terminated by user approval.")
-
-
-
-def extract_html(chat_history: ChatHistory):
-    pattern = r"html\s*(.*?)"
-    for message in reversed(chat_history.messages):
-        if message.role == "assistant":
-            match = re.search(pattern, message.content, re.DOTALL)
-            if match:
-                return match.group(1).strip()
-    return None
-
-
-
-
-# async def run_multi_agent(usermessage):
-#     """implement the multi-agent system."""
-#     return await multiagentfunc(uermessage)
 
 
