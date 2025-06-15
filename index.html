@@ -3,104 +3,118 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyCalculator</title>
+  <title>AmanLife - Himalayas Blog</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    header {
+      background: #4CAF50;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .content {
+      max-width: 800px;
+      margin: 1rem auto;
+      padding: 1rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .blog-title {
+      font-size: 24px;
+      margin-bottom: 0.5rem;
+    }
+    .featured {
+      background: #eef5e8;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    .article {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #ddd;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+      background: #4CAF50;
+      color: white;
+    }
+    .search-box {
+      margin-bottom: 1rem;
       display: flex;
       justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-color: #f4f4f9;
     }
-    .container {
-      text-align: center;
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    .search-box input {
+      width: 70%;
+      padding: 0.5rem;
+      font-size: 16px;
     }
-    h1 {
-      color: #333;
-    }
-    .input-field {
-      margin: 10px 0;
-    }
-    .input-field input {
-      width: 80%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      margin: 10px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      background-color: #007BFF;
-      color: #fff;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #result {
-      margin-top: 20px;
-      font-size: 20px;
-      color: #333;
-    }
-    .error {
-      color: red;
+    @media (max-width: 768px) {
+      .blog-title {
+        font-size: 20px;
+      }
+      .search-box input {
+        width: 100%;
+      }
     }
   </style>
-  <script>
-    function performOperation(operation) {
-      const num1 = document.getElementById('num1').value;
-      const num2 = document.getElementById('num2').value;
-      const resultField = document.getElementById('result');
-      
-      // Clear previous messages
-      resultField.className = '';
-      
-      // Validate numeric input
-      if (isNaN(num1) || isNaN(num2)) {
-        resultField.textContent = 'Error: Please enter valid numbers!';
-        resultField.className = 'error';
-        return;
-      }
-
-      const num1Value = parseFloat(num1);
-      const num2Value = parseFloat(num2);
-
-      let result;
-      if (operation === 'add') {
-        result = num1Value + num2Value;
-      } else if (operation === 'subtract') {
-        result = num1Value - num2Value;
-      }
-
-      resultField.textContent = `Result: ${result}`;
-    }
-  </script>
 </head>
 <body>
-  <div class="container">
-    <h1>MyCalculator</h1>
-    <p>Enter two numbers and select an operation.</p>
-    
-    <div class="input-field">
-      <input type="text" id="num1" placeholder="Enter first number">
+  <header>
+    <h1>Welcome to AmanLife</h1>
+    <p>Exploring the Beauty and Wonders of the Himalayas</p>
+  </header>
+
+  <div class="content">
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Search articles..." oninput="filterArticles()" />
     </div>
-    <div class="input-field">
-      <input type="text" id="num2" placeholder="Enter second number">
+    <div class="featured">
+      <h2>Featured Post</h2>
+      <h3 class="blog-title">Journey to the Heart of the Himalayas</h3>
+      <p>Discover the breathtaking landscapes, rich cultural heritage, and mesmerizing adventures that await in the Himalayan region...</p>
     </div>
 
-    <button onclick="performOperation('add')">Add</button>
-    <button onclick="performOperation('subtract')">Subtract</button>
-
-    <div id="result"></div>
+    <h2>Articles</h2>
+    <div id="article-list">
+      <div class="article" data-title="Trekking the Himalayas">
+        <h3 class="blog-title">Trekking the Himalayas</h3>
+        <p>Experience the thrill of trekking trails that wind through snow-capped peaks and serene valleys...</p>
+      </div>
+      <div class="article" data-title="Discover Himalayan Wildlife">
+        <h3 class="blog-title">Discover Himalayan Wildlife</h3>
+        <p>Learn about the unique flora and fauna that thrive in the Himalayan ecosystem...</p>
+      </div>
+      <div class="article" data-title="Cultural Heritage of the Himalayas">
+        <h3 class="blog-title">Cultural Heritage of the Himalayas</h3>
+        <p>Dive into the vibrant traditions, art, and history of the Himalayan people...</p>
+      </div>
+    </div>
   </div>
+
+  <footer>
+    <p>&copy; 2023 AmanLife. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    function filterArticles() {
+      const searchQuery = document.getElementById('search').value.toLowerCase();
+      const articles = document.querySelectorAll('.article');
+  
+      articles.forEach(article => {
+        const title = article.getAttribute('data-title').toLowerCase();
+        article.style.display = title.includes(searchQuery) ? 'block' : 'none';
+      });
+    }
+  </script>
 </body>
 </html>
