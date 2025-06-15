@@ -1,130 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jorethang Blog</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            background-color: #f4f4f9;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyCalculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f4f4f9;
+    }
+    .container {
+      text-align: center;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    .input-field {
+      margin: 10px 0;
+    }
+    .input-field input {
+      width: 80%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007BFF;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #333;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+  <script>
+    function performOperation(operation) {
+      const num1 = document.getElementById('num1').value;
+      const num2 = document.getElementById('num2').value;
+      const resultField = document.getElementById('result');
+      
+      // Clear previous messages
+      resultField.className = '';
+      
+      // Validate numeric input
+      if (isNaN(num1) || isNaN(num2)) {
+        resultField.textContent = 'Error: Please enter valid numbers!';
+        resultField.className = 'error';
+        return;
+      }
 
-        header {
-            background-color: #4caf50;
-            color: #fff;
-            padding: 10px 20px;
-            text-align: center;
-        }
+      const num1Value = parseFloat(num1);
+      const num2Value = parseFloat(num2);
 
-        main {
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
+      let result;
+      if (operation === 'add') {
+        result = num1Value + num2Value;
+      } else if (operation === 'subtract') {
+        result = num1Value - num2Value;
+      }
 
-        .blog-form {
-            margin-bottom: 20px;
-        }
-
-        .blog-list {
-            margin-top: 30px;
-        }
-
-        .blog-list h3 {
-            margin-bottom: 10px;
-        }
-
-        .blog-card {
-            background-color: #ffffff;
-            margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .blog-card small {
-            color: #777;
-        }
-    </style>
+      resultField.textContent = `Result: ${result}`;
+    }
+  </script>
 </head>
 <body>
-    <header>
-        <h1>Jorethang Blog</h1>
-        <p>Share your thoughts in 50 words or less</p>
-    </header>
+  <div class="container">
+    <h1>MyCalculator</h1>
+    <p>Enter two numbers and select an operation.</p>
+    
+    <div class="input-field">
+      <input type="text" id="num1" placeholder="Enter first number">
+    </div>
+    <div class="input-field">
+      <input type="text" id="num2" placeholder="Enter second number">
+    </div>
 
-    <main>
-        <section class="blog-form">
-            <h2>Create a Post</h2>
-            <textarea id="blogPost" rows="4" placeholder="Write your blog here (maximum 50 words)" style="width: 100%;"></textarea>
-            <p id="wordCount">Word count: 0</p>
-            <button id="submitPost">Submit</button>
-        </section>
+    <button onclick="performOperation('add')">Add</button>
+    <button onclick="performOperation('subtract')">Subtract</button>
 
-        <section class="blog-list">
-            <h3>Published Blogs</h3>
-            <div id="blogsContainer"></div>
-        </section>
-    </main>
-
-    <script>
-        const blogPostInput = document.getElementById("blogPost");
-        const wordCountElement = document.getElementById("wordCount");
-        const submitPostButton = document.getElementById("submitPost");
-        const blogsContainer = document.getElementById("blogsContainer");
-
-        let blogs = [];
-
-        // Function to count words in input
-        function countWords(text) {
-            if (!text) return 0;
-            return text.trim().split(/\s+/).length;
-        }
-
-        // Update word count as user types
-        blogPostInput.addEventListener("input", () => {
-            const wordCount = countWords(blogPostInput.value);
-            wordCountElement.textContent = `Word count: ${wordCount}`;
-        });
-
-        // Handle blog submission
-        submitPostButton.addEventListener("click", () => {
-            const content = blogPostInput.value.trim();
-            const wordCount = countWords(content);
-
-            if (wordCount > 50) {
-                alert("Your blog post exceeds 50 words. Please edit.");
-                return;
-            }
-
-            if (wordCount === 0) {
-                alert("Your blog post is empty. Please write something.");
-                return;
-            }
-
-            blogs.push({ content, date: new Date() });
-            blogPostInput.value = ""; // Clear the input
-            wordCountElement.textContent = "Word count: 0"; // Reset word count
-            renderBlogs();
-        });
-
-        // Render blogs
-        function renderBlogs() {
-            blogsContainer.innerHTML = ""; // Clear previous list
-            blogs.forEach((blog, index) => {
-                const blogElement = document.createElement("div");
-                blogElement.className = "blog-card";
-                blogElement.innerHTML = `
-                    <p>${blog.content}</p>
-                    <small>Posted on: ${blog.date.toLocaleString()}</small>
-                `;
-                blogsContainer.appendChild(blogElement);
-            });
-        }
-    </script>
+    <div id="result"></div>
+  </div>
 </body>
 </html>
