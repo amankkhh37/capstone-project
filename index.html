@@ -1,120 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AmanLife - Himalayas Blog</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f9;
-      color: #333;
-    }
-    header {
-      background: #4CAF50;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-    }
-    .content {
-      max-width: 800px;
-      margin: 1rem auto;
-      padding: 1rem;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .blog-title {
-      font-size: 24px;
-      margin-bottom: 0.5rem;
-    }
-    .featured {
-      background: #eef5e8;
-      padding: 1.5rem;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-    }
-    .article {
-      margin-bottom: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #ddd;
-    }
-    footer {
-      text-align: center;
-      padding: 1rem;
-      margin-top: 2rem;
-      background: #4CAF50;
-      color: white;
-    }
-    .search-box {
-      margin-bottom: 1rem;
-      display: flex;
-      justify-content: center;
-    }
-    .search-box input {
-      width: 70%;
-      padding: 0.5rem;
-      font-size: 16px;
-    }
-    @media (max-width: 768px) {
-      .blog-title {
-        font-size: 20px;
-      }
-      .search-box input {
-        width: 100%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprint Story Point Estimator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: grid;
+            gap: 20px;
+        }
+        label {
+            color: #333;
+        }
+        select,
+        input,
+        button {
+            padding: 10px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output {
+            background: #e5e5e5;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Welcome to AmanLife</h1>
-    <p>Exploring the Beauty and Wonders of the Himalayas</p>
-  </header>
-
-  <div class="content">
-    <div class="search-box">
-      <input type="text" id="search" placeholder="Search articles..." oninput="filterArticles()" />
+    <div class="container">
+        <h1>Sprint Story Point Estimator</h1>
+        <form id="storyPointForm">
+            <div>
+                <label for="criticality">Work Criticality:</label>
+                <select id="criticality" required>
+                    <option value="40">Critical</option>
+                    <option value="30">High</option>
+                    <option value="20">Medium</option>
+                    <option value="10">Low</option>
+                </select>
+            </div>
+            <div>
+                <label for="complexity">Work Complexity:</label>
+                <select id="complexity" required>
+                    <option value="30">High</option>
+                    <option value="20">Medium</option>
+                    <option value="10">Low</option>
+                </select>
+            </div>
+            <div>
+                <label for="time">Estimated Time (in hours):</label>
+                <input type="number" id="time" placeholder="Enter time in hours" required min="1">
+            </div>
+            <button type="button" id="calculateButton">Calculate Story Points</button>
+        </form>
+        <div class="output" id="output">
+            Story points will be displayed here.
+        </div>
     </div>
-    <div class="featured">
-      <h2>Featured Post</h2>
-      <h3 class="blog-title">Journey to the Heart of the Himalayas</h3>
-      <p>Discover the breathtaking landscapes, rich cultural heritage, and mesmerizing adventures that await in the Himalayan region...</p>
-    </div>
 
-    <h2>Articles</h2>
-    <div id="article-list">
-      <div class="article" data-title="Trekking the Himalayas">
-        <h3 class="blog-title">Trekking the Himalayas</h3>
-        <p>Experience the thrill of trekking trails that wind through snow-capped peaks and serene valleys...</p>
-      </div>
-      <div class="article" data-title="Discover Himalayan Wildlife">
-        <h3 class="blog-title">Discover Himalayan Wildlife</h3>
-        <p>Learn about the unique flora and fauna that thrive in the Himalayan ecosystem...</p>
-      </div>
-      <div class="article" data-title="Cultural Heritage of the Himalayas">
-        <h3 class="blog-title">Cultural Heritage of the Himalayas</h3>
-        <p>Dive into the vibrant traditions, art, and history of the Himalayan people...</p>
-      </div>
-    </div>
-  </div>
+    <script>
+        document.getElementById('calculateButton').addEventListener('click', () => {
+            const criticality = parseInt(document.getElementById('criticality').value, 10);
+            const complexity = parseInt(document.getElementById('complexity').value, 10);
+            const time = parseInt(document.getElementById('time').value, 10);
 
-  <footer>
-    <p>&copy; 2023 AmanLife. All Rights Reserved.</p>
-  </footer>
+            if (isNaN(time) || time <= 0) {
+                alert("Please enter a valid number for time.");
+                return;
+            }
 
-  <script>
-    function filterArticles() {
-      const searchQuery = document.getElementById('search').value.toLowerCase();
-      const articles = document.querySelectorAll('.article');
-  
-      articles.forEach(article => {
-        const title = article.getAttribute('data-title').toLowerCase();
-        article.style.display = title.includes(searchQuery) ? 'block' : 'none';
-      });
-    }
-  </script>
+            // Weights are defined as Criticality (40%), Complexity (30%), Time (30%)
+            const storyPoints = (criticality * 0.4) + (complexity * 0.3) + (time * 0.3);
+
+            document.getElementById('output').innerText = `Estimated Story Points: ${storyPoints.toFixed(2)}`;
+        });
+    </script>
 </body>
 </html>
