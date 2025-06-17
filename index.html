@@ -1,107 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sprint Story Point Estimator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background: #ffffff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        form {
-            display: grid;
-            gap: 20px;
-        }
-        label {
-            color: #333;
-        }
-        select,
-        input,
-        button {
-            padding: 10px;
-            font-size: 14px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .output {
-            background: #e5e5e5;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-            text-align: center;
-            color: #333;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List Application</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 20px;
+      padding: 0;
+    }
+    #app {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      background: white;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .task-input {
+      margin-bottom: 20px;
+    }
+    #new-task {
+      width: 70%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+    #add-task {
+      padding: 10px 15px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #add-task:hover {
+      background-color: #218838;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .task-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    .task-item.complete {
+      background-color: #d4edda;
+    }
+    .task-actions button {
+      margin-left: 10px;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .edit-btn {
+      background-color: #007bff;
+      color: white;
+    }
+    .delete-btn {
+      background-color: #dc3545;
+      color: white;
+    }
+    .complete-btn {
+      background-color: #28a745;
+      color: white;
+    }
+    .edit-btn:hover {
+      background-color: #0056b3;
+    }
+    .delete-btn:hover {
+      background-color: #c82333;
+    }
+    .complete-btn:hover {
+      background-color: #218838;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Sprint Story Point Estimator</h1>
-        <form id="storyPointForm">
-            <div>
-                <label for="criticality">Work Criticality:</label>
-                <select id="criticality" required>
-                    <option value="40">Critical</option>
-                    <option value="30">High</option>
-                    <option value="20">Medium</option>
-                    <option value="10">Low</option>
-                </select>
-            </div>
-            <div>
-                <label for="complexity">Work Complexity:</label>
-                <select id="complexity" required>
-                    <option value="30">High</option>
-                    <option value="20">Medium</option>
-                    <option value="10">Low</option>
-                </select>
-            </div>
-            <div>
-                <label for="time">Estimated Time (in hours):</label>
-                <input type="number" id="time" placeholder="Enter time in hours" required min="1">
-            </div>
-            <button type="button" id="calculateButton">Calculate Story Points</button>
-        </form>
-        <div class="output" id="output">
-            Story points will be displayed here.
-        </div>
+  <div id="app">
+    <h1>To-Do List</h1>
+    <div class="task-input">
+      <input type="text" id="new-task" placeholder="Add a new task" />
+      <button id="add-task">Add Task</button>
     </div>
+    <ul id="task-list"></ul>
+  </div>
 
-    <script>
-        document.getElementById('calculateButton').addEventListener('click', () => {
-            const criticality = parseInt(document.getElementById('criticality').value, 10);
-            const complexity = parseInt(document.getElementById('complexity').value, 10);
-            const time = parseInt(document.getElementById('time').value, 10);
+  <script>
+    const newTaskInput = document.getElementById("new-task");
+    const addTaskButton = document.getElementById("add-task");
+    const taskList = document.getElementById("task-list");
 
-            if (isNaN(time) || time <= 0) {
-                alert("Please enter a valid number for time.");
-                return;
-            }
+    // Event listener for adding tasks
+    addTaskButton.addEventListener("click", () => {
+      const taskValue = newTaskInput.value.trim();
+      if (taskValue === "") {
+        alert("Please enter a task.");
+        return;
+      }
 
-            // Weights are defined as Criticality (40%), Complexity (30%), Time (30%)
-            const storyPoints = (criticality * 0.4) + (complexity * 0.3) + (time * 0.3);
+      const taskItem = document.createElement("li");
+      taskItem.className = "task-item";
 
-            document.getElementById('output').innerText = `Estimated Story Points: ${storyPoints.toFixed(2)}`;
-        });
-    </script>
+      const taskTitle = document.createElement("span");
+      taskTitle.textContent = taskValue;
+
+      const taskActions = document.createElement("div");
+      taskActions.className = "task-actions";
+
+      // Complete button
+      const completeButton = document.createElement("button");
+      completeButton.className = "complete-btn";
+      completeButton.textContent = "Complete";
+      completeButton.addEventListener("click", () => {
+        taskItem.classList.toggle("complete");
+      });
+
+      // Edit button
+      const editButton = document.createElement("button");
+      editButton.className = "edit-btn";
+      editButton.textContent = "Edit";
+      editButton.addEventListener("click", () => {
+        const newTaskText = prompt("Edit your task:", taskTitle.textContent);
+        if (newTaskText !== null && newTaskText.trim() !== "") {
+          taskTitle.textContent = newTaskText.trim();
+        }
+      });
+
+      // Delete button
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "delete-btn";
+      deleteButton.textContent = "Delete";
+      deleteButton.addEventListener("click", () => {
+        if (confirm("Are you sure you want to delete this task?")) {
+          taskList.removeChild(taskItem);
+        }
+      });
+
+      taskActions.appendChild(completeButton);
+      taskActions.appendChild(editButton);
+      taskActions.appendChild(deleteButton);
+
+      taskItem.appendChild(taskTitle);
+      taskItem.appendChild(taskActions);
+
+      taskList.appendChild(taskItem);
+      newTaskInput.value = "";
+    });
+  </script>
 </body>
 </html>
