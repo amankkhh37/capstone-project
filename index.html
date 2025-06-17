@@ -3,165 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>To-Do List Application</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
-      margin: 20px;
-      padding: 0;
-    }
-    #app {
-      max-width: 600px;
-      margin: auto;
-      padding: 20px;
-      background: white;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    .task-input {
-      margin-bottom: 20px;
-    }
-    #new-task {
-      width: 70%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      margin-right: 10px;
-    }
-    #add-task {
-      padding: 10px 15px;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #add-task:hover {
-      background-color: #218838;
-    }
-    ul {
-      list-style-type: none;
-      padding: 0;
-    }
-    .task-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background-color: #f9f9f9;
-    }
-    .task-item.complete {
-      background-color: #d4edda;
-    }
-    .task-actions button {
-      margin-left: 10px;
-      border: none;
-      padding: 5px 10px;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    .edit-btn {
-      background-color: #007bff;
-      color: white;
-    }
-    .delete-btn {
-      background-color: #dc3545;
-      color: white;
-    }
-    .complete-btn {
-      background-color: #28a745;
-      color: white;
-    }
-    .edit-btn:hover {
-      background-color: #0056b3;
-    }
-    .delete-btn:hover {
-      background-color: #c82333;
-    }
-    .complete-btn:hover {
-      background-color: #218838;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
+  <title>To-Do List App</title>
 </head>
 <body>
-  <div id="app">
+  <div class="container">
     <h1>To-Do List</h1>
-    <div class="task-input">
-      <input type="text" id="new-task" placeholder="Add a new task" />
-      <button id="add-task">Add Task</button>
+
+    <!-- Task Creation Form -->
+    <div class="task-form">
+      <input id="taskTitle" type="text" placeholder="Task Title" required />
+      <textarea id="taskDescription" placeholder="Task Description" rows="3"></textarea>
+      <input id="taskDueDate" type="date" required />
+      <button id="addTaskBtn">Add Task</button>
     </div>
-    <ul id="task-list"></ul>
+
+    <!-- Date Filter -->
+    <div class="filter">
+      <label for="filterDate">Filter by Date:</label>
+      <input id="filterDate" type="date" />
+      <button id="filterBtn">Filter</button>
+      <button id="clearFilterBtn">Clear Filter</button>
+    </div>
+
+    <!-- Task List -->
+    <div class="task-list-container">
+      <table id="taskTable">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="taskTableBody">
+          <!-- Dynamic task rows go here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Excel Export -->
+    <button id="exportExcelBtn">Export to Excel</button>
   </div>
 
-  <script>
-    const newTaskInput = document.getElementById("new-task");
-    const addTaskButton = document.getElementById("add-task");
-    const taskList = document.getElementById("task-list");
-
-    // Event listener for adding tasks
-    addTaskButton.addEventListener("click", () => {
-      const taskValue = newTaskInput.value.trim();
-      if (taskValue === "") {
-        alert("Please enter a task.");
-        return;
-      }
-
-      const taskItem = document.createElement("li");
-      taskItem.className = "task-item";
-
-      const taskTitle = document.createElement("span");
-      taskTitle.textContent = taskValue;
-
-      const taskActions = document.createElement("div");
-      taskActions.className = "task-actions";
-
-      // Complete button
-      const completeButton = document.createElement("button");
-      completeButton.className = "complete-btn";
-      completeButton.textContent = "Complete";
-      completeButton.addEventListener("click", () => {
-        taskItem.classList.toggle("complete");
-      });
-
-      // Edit button
-      const editButton = document.createElement("button");
-      editButton.className = "edit-btn";
-      editButton.textContent = "Edit";
-      editButton.addEventListener("click", () => {
-        const newTaskText = prompt("Edit your task:", taskTitle.textContent);
-        if (newTaskText !== null && newTaskText.trim() !== "") {
-          taskTitle.textContent = newTaskText.trim();
-        }
-      });
-
-      // Delete button
-      const deleteButton = document.createElement("button");
-      deleteButton.className = "delete-btn";
-      deleteButton.textContent = "Delete";
-      deleteButton.addEventListener("click", () => {
-        if (confirm("Are you sure you want to delete this task?")) {
-          taskList.removeChild(taskItem);
-        }
-      });
-
-      taskActions.appendChild(completeButton);
-      taskActions.appendChild(editButton);
-      taskActions.appendChild(deleteButton);
-
-      taskItem.appendChild(taskTitle);
-      taskItem.appendChild(taskActions);
-
-      taskList.appendChild(taskItem);
-      newTaskInput.value = "";
-    });
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
